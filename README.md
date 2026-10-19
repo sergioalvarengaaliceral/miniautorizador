@@ -4,8 +4,15 @@ API REST em Java 21, Spring Boot 3.5 e Maven para criar cartões, consultar sald
 
 ## Executar com Docker Compose
 
-Requisito: Docker com Docker Compose. Na pasta `docker`, execute:
+Clone o repositório e entre na pasta do projeto:
 
+```sh
+git clone https://github.com/sergioalvarengaaliceral/miniautorizador.git
+cd miniautorizador
+cd docker
+```
+
+Requisito: Docker com Docker Compose. Execute:
 ```sh
 docker compose up --build -d miniautorizador
 ```
