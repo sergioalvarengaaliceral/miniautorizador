@@ -21,6 +21,10 @@ O Compose inicia o MySQL e a aplicação. A imagem da aplicação é compilada c
 
 Para parar a aplicação e o banco, ainda na pasta `docker`, execute `docker compose stop miniautorizador mysql`.
 
+## Observabilidade
+
+A aplicação disponibiliza liveness em `/actuator/health/liveness` e readiness em `/actuator/health/readiness`. A prontidão inclui a verificação de conexão com o MySQL. Esses endpoints retornam somente o estado geral e são públicos para uso do healthcheck do container. Métricas e scrape Prometheus ficam em `/actuator/metrics` e `/actuator/prometheus`, protegidos por HTTP Basic. A métrica `miniautorizador.transacoes` conta resultados por tipo, sem usar dados do cartão como dimensão. Cada requisição recebe um UUID no cabeçalho de resposta `X-Correlation-ID`; o log da autorização inclui esse identificador e o resultado, sem registrar número do cartão, senha ou valor.
+
 ## Executar localmente para desenvolvimento
 
 Requisitos: JDK 21 e Maven Wrapper (`mvnw.cmd` no Windows ou `./mvnw` em Linux/macOS). Inicie somente o banco na pasta `docker` com `docker compose up -d mysql`. Depois, na raiz do projeto, execute `mvnw.cmd spring-boot:run` no Windows ou `./mvnw spring-boot:run` em Linux/macOS.
@@ -62,4 +66,11 @@ Os testes unitários exercitam os serviços e as regras diretamente. Os testes d
 
 ```sh
 mvn test
+```
+Para validar a concorrência no MySQL 5.7 do Compose, inicie o banco e rode o teste de integração dedicado:
+
+```sh
+docker compose -f docker/docker-compose.yml up -d mysql
+mvn -Dtest=TransacaoMySqlIT -Dmysql.integration=true test
+docker compose -f docker/docker-compose.yml stop mysql
 ```

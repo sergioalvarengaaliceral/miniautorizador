@@ -45,3 +45,9 @@ services:
       DB_URL: jdbc:mysql://mysql:3306/miniautorizador?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       DB_USER: root
       DB_PASSWORD: ""
+    healthcheck:
+      test: ["CMD", "java", "-cp", "/opt/healthcheck", "Healthcheck"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
